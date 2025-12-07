@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # boot_dw: Bootstrap Tests for Autocorrelation
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -467,3 +468,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 This implementation is based on the seminal work of Jeong & Chung (2001). Special thanks to the authors for their rigorous theoretical and empirical analysis of bootstrap methods for autocorrelation testing.
+=======
+# bootdw
+>>>>>>> 2ae2e9819aa8a42d92b1e689d0beabadb51b807a
