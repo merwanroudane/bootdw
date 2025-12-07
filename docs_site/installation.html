@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation - boot_dw Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">📊</span>
+                <span class="logo-text">boot_dw</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="installation.html" class="active">Installation</a></li>
+                <li><a href="quick-start.html">Quick Start</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="api.html">API Reference</a></li>
+                <li><a href="https://github.com/your-repo/boot_dw" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content-page">
+        <div class="container">
+            <h1>Installation</h1>
+            
+            <h2>Requirements</h2>
+            <p>Boot_dw requires Python 3.7 or higher. The package depends on the following libraries:</p>
+            <ul>
+                <li><code>numpy</code> - For numerical computations</li>
+                <li><code>scipy</code> - For statistical distributions</li>
+            </ul>
+
+            <h2>Install via pip</h2>
+            <p>The easiest way to install boot_dw is using pip:</p>
+            <pre><code class="bash">pip install boot-dw</code></pre>
+
+            <h2>Install from source</h2>
+            <p>You can also install boot_dw directly from the source code:</p>
+            <pre><code class="bash"># Clone the repository
+git clone https://github.com/your-repo/boot_dw.git
+cd boot_dw
+
+# Install in development mode
+pip install -e .</code></pre>
+
+            <h2>Verify Installation</h2>
+            <p>To verify that boot_dw has been installed correctly, run the following Python code:</p>
+            <pre><code class="python">import boot_dw
+
+print(f"boot_dw version: {boot_dw.__version__}")
+print(f"Available functions: {boot_dw.__all__}")</code></pre>
+
+            <p>You should see output similar to:</p>
+            <pre><code>boot_dw version: 0.0.1
+Available functions: ['durbin_watson', 'ols_regression', 'dw_test', 'bdw_test', 
+                      'b_rho_test', 'bca_rho_test', 'autocorrelation_test', ...]</code></pre>
+
+            <h2>Optional Dependencies</h2>
+            <p>For running examples and working with real data, you may want to install additional packages:</p>
+            <pre><code class="bash"># For data manipulation and visualization
+pip install pandas matplotlib seaborn
+
+# For downloading economic data from FRED
+pip install pandas-datareader fredapi</code></pre>
+
+            <h2>Development Installation</h2>
+            <p>If you want to contribute to boot_dw development, install the development dependencies:</p>
+            <pre><code class="bash">pip install boot-dw[dev]</code></pre>
+
+            <p>This will install additional tools for testing and development:</p>
+            <ul>
+                <li><code>pytest</code> - For running tests</li>
+                <li><code>black</code> - For code formatting</li>
+                <li><code>flake8</code> - For code linting</li>
+                <li><code>mypy</code> - For type checking</li>
+            </ul>
+
+            <h2>Troubleshooting</h2>
+            
+            <h3>ImportError: No module named 'boot_dw'</h3>
+            <p>If you get this error, ensure that:</p>
+            <ol>
+                <li>You've installed the package using <code>pip install boot-dw</code></li>
+                <li>You're using the correct Python environment</li>
+                <li>The package is installed in the same environment where you're running Python</li>
+            </ol>
+
+            <h3>NumPy/SciPy Installation Issues</h3>
+            <p>On some systems, you may need to install NumPy and SciPy before installing boot_dw:</p>
+            <pre><code class="bash">pip install numpy scipy
+pip install boot-dw</code></pre>
+
+            <h3>Permission Denied</h3>
+            <p>If you encounter permission errors on Linux/Mac, use:</p>
+            <pre><code class="bash">pip install --user boot-dw</code></pre>
+
+            <div class="note">
+                <p><strong>Note:</strong> It's recommended to install boot_dw in a virtual environment to avoid conflicts with other packages.</p>
+            </div>
+
+            <h2>Creating a Virtual Environment</h2>
+            
+            <h3>Using venv (Python 3.3+)</h3>
+            <pre><code class="bash"># Create a virtual environment
+python -m venv myenv
+
+# Activate the virtual environment
+# On Windows:
+myenv\Scripts\activate
+# On Linux/Mac:
+source myenv/bin/activate
+
+# Install boot_dw
+pip install boot-dw</code></pre>
+
+            <h3>Using conda</h3>
+            <pre><code class="bash"># Create a conda environment
+conda create -n myenv python=3.9
+
+# Activate the environment
+conda activate myenv
+
+# Install boot_dw
+pip install boot-dw</code></pre>
+
+            <h2>Next Steps</h2>
+            <p>Now that you have boot_dw installed, you can:</p>
+            <ul>
+                <li><a href="quick-start.html">Follow the Quick Start guide</a> to learn the basics</li>
+                <li><a href="examples.html">Explore real-world examples</a> using economic data</li>
+                <li><a href="api.html">Read the API reference</a> for detailed documentation</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 boot_dw by Dr. Merwan Roudane. Released under the MIT License.</p>
+            <p>
+                <a href="https://github.com/your-repo/boot_dw">GitHub</a> |
+                <a href="mailto:merwanroudane920@gmail.com">Contact</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

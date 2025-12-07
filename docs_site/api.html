@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference - boot_dw Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        .api-section {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 2px solid var(--border-color);
+        }
+        .api-function {
+            background: white;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        .function-signature {
+            background: var(--bg-dark);
+            color: #e5e7eb;
+            padding: 16px;
+            border-radius: 6px;
+            font-family: 'Source Code Pro', monospace;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+        .param-table {
+            width: 100%;
+            margin: 16px 0;
+        }
+        .param-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+        .return-type {
+            background: var(--code-bg);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">📊</span>
+                <span class="logo-text">boot_dw</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="quick-start.html">Quick Start</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="api.html" class="active">API Reference</a></li>
+                <li><a href="https://github.com/your-repo/boot_dw" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content-page">
+        <div class="container">
+            <h1>API Reference</h1>
+            
+            <p>Complete reference for all functions in the boot_dw package.</p>
+
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#test-functions">Test Functions</a>
+                    <ul>
+                        <li><a href="#dw_test">dw_test()</a></li>
+                        <li><a href="#bdw_test">bdw_test()</a></li>
+                        <li><a href="#b_rho_test">b_rho_test()</a></li>
+                        <li><a href="#bca_rho_test">bca_rho_test()</a></li>
+                        <li><a href="#autocorrelation_test">autocorrelation_test()</a></li>
+                    </ul>
+                </li>
+                <li><a href="#core-functions">Core Functions</a>
+                    <ul>
+                        <li><a href="#durbin_watson">durbin_watson()</a></li>
+                        <li><a href="#ols_regression">ols_regression()</a></li>
+                        <li><a href="#estimate_rho">estimate_rho()</a></li>
+                    </ul>
+                </li>
+                <li><a href="#bootstrap-functions">Bootstrap Functions</a>
+                    <ul>
+                        <li><a href="#recursive_bootstrap_dw">recursive_bootstrap_dw()</a></li>
+                        <li><a href="#recursive_bootstrap_rho">recursive_bootstrap_rho()</a></li>
+                        <li><a href="#bca_confidence_interval">bca_confidence_interval()</a></li>
+                    </ul>
+                </li>
+                <li><a href="#utilities">Utilities</a></li>
+            </ul>
+
+            <div id="test-functions" class="api-section">
+                <h2>Test Functions</h2>
+                <p>High-level functions for testing autocorrelation in regression models.</p>
+
+                <div id="dw_test" class="api-function">
+                    <h3>dw_test()</h3>
+                    <p>Classical Durbin-Watson test for autocorrelation.</p>
+                    
+                    <div class="function-signature">
+boot_dw.dw_test(y, X, alternative='greater', add_constant=True)
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>y</code></td>
+                                <td>ndarray, shape (n,)</td>
+                                <td>Dependent variable</td>
+                            </tr>
+                            <tr>
+                                <td><code>X</code></td>
+                                <td>ndarray, shape (n, k)</td>
+                                <td>Independent variables</td>
+                            </tr>
+                            <tr>
+                                <td><code>alternative</code></td>
+                                <td>{'greater', 'less', 'two-sided'}</td>
+                                <td>Alternative hypothesis. Default is 'greater' (ρ > 0)</td>
+                            </tr>
+                            <tr>
+                                <td><code>add_constant</code></td>
+                                <td>bool</td>
+                                <td>Whether to add intercept. Default is True</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Returns</h4>
+                    <p><span class="return-type">TestResult</span> - Object containing test results</p>
+
+                    <div class="note">
+                        <p><strong>Note:</strong> The classical DW test has an indeterminate range (dL, dU) and does not provide exact p-values. 
+                        Consider using <code>bdw_test()</code>, <code>b_rho_test()</code>, or <code>bca_rho_test()</code> for exact inference.</p>
+                    </div>
+
+                    <h4>Example</h4>
+                    <pre><code class="python">from boot_dw import dw_test
+import numpy as np
+
+y = np.array([...])
+X = np.array([...])
+result = dw_test(y, X)
+print(result)</code></pre>
+                </div>
+
+                <div id="bdw_test" class="api-function">
+                    <h3>bdw_test()</h3>
+                    <p>Bootstrapped Durbin-Watson test for autocorrelation.</p>
+                    
+                    <div class="function-signature">
+boot_dw.bdw_test(y, X, alternative='greater', n_bootstrap=200, 
+                 alpha=0.05, add_constant=True, random_state=None)
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>y</code></td>
+                                <td>ndarray</td>
+                                <td>Dependent variable</td>
+                            </tr>
+                            <tr>
+                                <td><code>X</code></td>
+                                <td>ndarray</td>
+                                <td>Independent variables</td>
+                            </tr>
+                            <tr>
+                                <td><code>alternative</code></td>
+                                <td>str</td>
+                                <td>Alternative hypothesis</td>
+                            </tr>
+                            <tr>
+                                <td><code>n_bootstrap</code></td>
+                                <td>int</td>
+                                <td>Number of bootstrap replications. Default is 200</td>
+                            </tr>
+                            <tr>
+                                <td><code>alpha</code></td>
+                                <td>float</td>
+                                <td>Significance level. Default is 0.05</td>
+                            </tr>
+                            <tr>
+                                <td><code>add_constant</code></td>
+                                <td>bool</td>
+                                <td>Whether to add intercept. Default is True</td>
+                            </tr>
+                            <tr>
+                                <td><code>random_state</code></td>
+                                <td>int, optional</td>
+                                <td>Random seed for reproducibility</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Returns</h4>
+                    <p><span class="return-type">TestResult</span> - Object with statistic, pvalue, and additional info</p>
+
+                    <h4>Notes</h4>
+                    <p>This test eliminates the indeterminate range by constructing the empirical null distribution F*_d 
+                    through recursive bootstrap. The test imposes H₀: ρ = 0 during bootstrap.</p>
+
+                    <h4>References</h4>
+                    <p>Jeong & Chung (2001), Section 3, pp. 55-56</p>
+
+                    <h4>Example</h4>
+                    <pre><code class="python">from boot_dw import bdw_test
+
+result = bdw_test(y, X, n_bootstrap=200, random_state=42)
+print(f"DW statistic: {result.statistic:.4f}")
+print(f"P-value: {result.pvalue:.4f}")</code></pre>
+                </div>
+
+                <div id="b_rho_test" class="api-function">
+                    <h3>b_rho_test()</h3>
+                    <p>Bootstrapped ρ test using the percentile method.</p>
+                    
+                    <div class="function-signature">
+boot_dw.b_rho_test(y, X, alternative='greater', n_bootstrap=200,
+                   alpha=0.05, add_constant=True, random_state=None)
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <p>Same as <code>bdw_test()</code></p>
+
+                    <h4>Returns</h4>
+                    <p><span class="return-type">TestResult</span> - Object containing ρ̂, p-value, and confidence interval</p>
+
+                    <h4>Notes</h4>
+                    <p>This test directly bootstraps the autocorrelation coefficient ρ using the percentile method. 
+                    Unlike BDW, it constructs the distribution under the alternative (conditional on the sample), 
+                    then compares the null value ρ = 0 to the empirical distribution.</p>
+
+                    <h4>Example</h4>
+                    <pre><code class="python">from boot_dw import b_rho_test
+
+result = b_rho_test(y, X, n_bootstrap=200, random_state=42)
+print(f"ρ̂ = {result.statistic:.4f}")
+print(f"95% CI: {result.additional_info['percentile_interval']}")</code></pre>
+                </div>
+
+                <div id="bca_rho_test" class="api-function">
+                    <h3>bca_rho_test()</h3>
+                    <p>Bias-corrected accelerated ρ test (recommended).</p>
+                    
+                    <div class="function-signature">
+boot_dw.bca_rho_test(y, X, alternative='greater', n_bootstrap=200,
+                     alpha=0.05, add_constant=True, random_state=None)
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <p>Same as <code>bdw_test()</code></p>
+
+                    <h4>Returns</h4>
+                    <p><span class="return-type">TestResult</span> - Object with ρ̂, p-value, BCa interval, and correction constants</p>
+
+                    <div class="tip">
+                        <p><strong>Recommended Test:</strong> This is the most powerful test from Jeong & Chung (2001). 
+                        It has the best small-sample properties and highest power.</p>
+                    </div>
+
+                    <h4>Notes</h4>
+                    <p>The BCa method (Efron 1987) corrects the percentile method for bias and skewness using:</p>
+                    <ul>
+                        <li><strong>Bias constant (z₀):</strong> Measures deviation of bootstrap distribution from observed value</li>
+                        <li><strong>Acceleration constant (a₀):</strong> Measures rate of change of standard error (from jackknife)</li>
+                    </ul>
+
+                    <h4>Monte Carlo Evidence</h4>
+                    <p>Jeong & Chung (2001) show that the BCa-ρ test:</p>
+                    <ul>
+                        <li>Has most accurate empirical size</li>
+                        <li>Has highest power, especially in small samples</li>
+                        <li>Maintains robust performance across sample sizes (n=10 to n=200)</li>
+                    </ul>
+
+                    <h4>Example</h4>
+                    <pre><code class="python">from boot_dw import bca_rho_test
+
+result = bca_rho_test(y, X, n_bootstrap=200, random_state=42)
+
+print(f"ρ̂ = {result.statistic:.4f}")
+print(f"P-value = {result.pvalue:.4f}")
+print(f"95% BCa CI: {result.additional_info['bca_interval']}")
+print(f"Bias constant z₀ = {result.additional_info['bias_constant_z0']:.4f}")
+print(f"Acceleration a₀ = {result.additional_info['acceleration_constant_a0']:.4f}")</code></pre>
+                </div>
+
+                <div id="autocorrelation_test" class="api-function">
+                    <h3>autocorrelation_test()</h3>
+                    <p>Unified interface for all autocorrelation tests.</p>
+                    
+                    <div class="function-signature">
+boot_dw.autocorrelation_test(y, X, method='bca_rho', 
+                             alternative='greater', n_bootstrap=200,
+                             alpha=0.05, add_constant=True, 
+                             random_state=None)
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>method</code></td>
+                                <td>{'dw', 'bdw', 'b_rho', 'bca_rho'}</td>
+                                <td>Test method to use. Default is 'bca_rho'</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>Other parameters same as individual test functions.</p>
+
+                    <h4>Example</h4>
+                    <pre><code class="python">from boot_dw import autocorrelation_test
+
+# Use recommended BCa-ρ test (default)
+result = autocorrelation_test(y, X, random_state=42)
+
+# Or specify a different method
+result = autocorrelation_test(y, X, method='bdw', random_state=42)</code></pre>
+                </div>
+            </div>
+
+            <div id="core-functions" class="api-section">
+                <h2>Core Functions</h2>
+                <p>Low-level statistical functions for regression and autocorrelation analysis.</p>
+
+                <div id="durbin_watson" class="api-function">
+                    <h3>durbin_watson()</h3>
+                    <p>Calculate the Durbin-Watson statistic.</p>
+                    
+                    <div class="function-signature">
+boot_dw.durbin_watson(residuals, axis=0)
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <table class="param-table">
+                        <tbody>
+                            <tr>
+                                <td><code>residuals</code></td>
+                                <td>ndarray</td>
+                                <td>OLS residuals from regression</td>
+                            </tr>
+                            <tr>
+                                <td><code>axis</code></td>
+                                <td>int</td>
+                                <td>Axis to use for calculation. Default is 0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Returns</h4>
+                    <p><span class="return-type">float</span> - Durbin-Watson statistic</p>
+
+                    <h4>Formula</h4>
+                    <p>DW = Σ(eₜ - eₜ₋₁)² / Σeₜ² ≈ 2(1 - ρ̂)</p>
+
+                    <h4>Example</h4>
+                    <pre><code class="python">from boot_dw import durbin_watson, ols_regression
+
+beta, residuals, fitted = ols_regression(y, X)
+dw = durbin_watson(residuals)
+print(f"DW statistic: {dw:.4f}")</code></pre>
+                </div>
+
+                <div id="ols_regression" class="api-function">
+                    <h3>ols_regression()</h3>
+                    <p>Perform Ordinary Least Squares regression.</p>
+                    
+                    <div class="function-signature">
+boot_dw.ols_regression(y, X, add_constant=True)
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <table class="param-table">
+                        <tbody>
+                            <tr>
+                                <td><code>y</code></td>
+                                <td>ndarray, shape (n,)</td>
+                                <td>Dependent variable</td>
+                            </tr>
+                            <tr>
+                                <td><code>X</code></td>
+                                <td>ndarray, shape (n, k)</td>
+                                <td>Independent variables</td>
+                            </tr>
+                            <tr>
+                                <td><code>add_constant</code></td>
+                                <td>bool</td>
+                                <td>Whether to add intercept. Default is True</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Returns</h4>
+                    <ul>
+                        <li><code>beta</code> (ndarray): OLS coefficient estimates</li>
+                        <li><code>residuals</code> (ndarray): OLS residuals ê = y - Xβ̂</li>
+                        <li><code>fitted</code> (ndarray): Fitted values ŷ = Xβ̂</li>
+                    </ul>
+
+                    <h4>Example</h4>
+                    <pre><code class="python">from boot_dw import ols_regression
+
+beta, residuals, fitted = ols_regression(y, X, add_constant=True)
+print(f"Coefficients: {beta}")
+print(f"R-squared: {1 - np.var(residuals)/np.var(y):.4f}")</code></pre>
+                </div>
+
+                <div id="estimate_rho" class="api-function">
+                    <h3>estimate_rho()</h3>
+                    <p>Estimate the AR(1) coefficient ρ from residuals.</p>
+                    
+                    <div class="function-signature">
+boot_dw.estimate_rho(residuals)
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <p><code>residuals</code> (ndarray) - Residuals from regression</p>
+
+                    <h4>Returns</h4>
+                    <p><span class="return-type">float</span> - Estimated autocorrelation coefficient ρ̂</p>
+
+                    <h4>Formula</h4>
+                    <p>ρ̂ = Σuₜuₜ₋₁ / Σu²ₜ₋₁</p>
+
+                    <h4>Example</h4>
+                    <pre><code class="python">from boot_dw import estimate_rho
+
+rho = estimate_rho(residuals)
+print(f"Autocorrelation coefficient: {rho:.4f}")</code></pre>
+                </div>
+            </div>
+
+            <div id="bootstrap-functions" class="api-section">
+                <h2>Bootstrap Functions</h2>
+                <p>Functions implementing recursive bootstrap procedures.</p>
+
+                <div id="recursive_bootstrap_dw" class="api-function">
+                    <h3>recursive_bootstrap_dw()</h3>
+                    <p>Perform recursive bootstrap for Durbin-Watson statistic.</p>
+                    
+                    <div class="function-signature">
+boot_dw.recursive_bootstrap_dw(y, X, residuals, rho_est,
+                               n_bootstrap=200, random_state=None)
+                    </div>
+
+                    <h4>Returns</h4>
+                    <p><span class="return-type">ndarray, shape (n_bootstrap,)</span> - Bootstrap DW statistics under H₀</p>
+                </div>
+
+                <div id="recursive_bootstrap_rho" class="api-function">
+                    <h3>recursive_bootstrap_rho()</h3>
+                    <p>Perform recursive bootstrap for AR(1) coefficient ρ.</p>
+                    
+                    <div class="function-signature">
+boot_dw.recursive_bootstrap_rho(y, X, residuals, rho_est,
+                                n_bootstrap=200, random_state=None)
+                    </div>
+
+                    <h4>Returns</h4>
+                    <p><span class="return-type">ndarray, shape (n_bootstrap,)</span> - Bootstrap ρ estimates</p>
+                </div>
+
+                <div id="bca_confidence_interval" class="api-function">
+                    <h3>bca_confidence_interval()</h3>
+                    <p>Calculate BCa confidence interval.</p>
+                    
+                    <div class="function-signature">
+boot_dw.bca_confidence_interval(statistic_bootstrap, statistic_observed,
+                                y, X, alpha=0.05)
+                    </div>
+
+                    <h4>Returns</h4>
+                    <ul>
+                        <li><code>lower</code> (float): Lower confidence bound</li>
+                        <li><code>upper</code> (float): Upper confidence bound</li>
+                        <li><code>z0</code> (float): Bias correction constant</li>
+                        <li><code>a0</code> (float): Acceleration constant</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="utilities" class="api-section">
+                <h2>Utilities</h2>
+
+                <div class="api-function">
+                    <h3>TestResult</h3>
+                    <p>Object returned by all test functions containing test results.</p>
+
+                    <h4>Attributes</h4>
+                    <table class="param-table">
+                        <tbody>
+                            <tr>
+                                <td><code>statistic</code></td>
+                                <td>float</td>
+                                <td>Test statistic value</td>
+                            </tr>
+                            <tr>
+                                <td><code>pvalue</code></td>
+                                <td>float or None</td>
+                                <td>P-value of the test</td>
+                            </tr>
+                            <tr>
+                                <td><code>method</code></td>
+                                <td>str</td>
+                                <td>Name of the test method</td>
+                            </tr>
+                            <tr>
+                                <td><code>alternative</code></td>
+                                <td>str</td>
+                                <td>Alternative hypothesis</td>
+                            </tr>
+                            <tr>
+                                <td><code>additional_info</code></td>
+                                <td>dict</td>
+                                <td>Additional test-specific information</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Example</h4>
+                    <pre><code class="python">result = bca_rho_test(y, X)
+
+# Access attributes
+print(result.statistic)
+print(result.pvalue)
+print(result.method)
+
+# String representation
+print(result)
+
+# Access additional info
+ci = result.additional_info['bca_interval']
+print(f"95% CI: [{ci[0]:.4f}, {ci[1]:.4f}]")</code></pre>
+                </div>
+            </div>
+
+            <h2>Additional Resources</h2>
+            <ul>
+                <li><a href="examples.html">View detailed examples</a> using real economic data</li>
+                <li><a href="https://github.com/your-repo/boot_dw">GitHub repository</a> with source code</li>
+                <li><a href="mailto:merwanroudane920@gmail.com">Contact author</a> for questions</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 boot_dw by Dr. Merwan Roudane. Released under the MIT License.</p>
+            <p>
+                <a href="https://github.com/your-repo/boot_dw">GitHub</a> |
+                <a href="mailto:merwanroudane920@gmail.com">Contact</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

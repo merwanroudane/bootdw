@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples - boot_dw Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">📊</span>
+                <span class="logo-text">boot_dw</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="quick-start.html">Quick Start</a></li>
+                <li><a href="examples.html" class="active">Examples</a></li>
+                <li><a href="api.html">API Reference</a></li>
+                <li><a href="https://github.com/your-repo/boot_dw" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content-page">
+        <div class="container">
+            <h1>Comprehensive Examples</h1>
+            
+            <p>This page provides real-world examples using economic data to demonstrate the full capabilities of boot_dw.</p>
+
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#example1">Example 1: Phillips Curve - Inflation and Unemployment</a></li>
+                <li><a href="#example2">Example 2: Consumption Function</a></li>
+                <li><a href="#example3">Example 3: Money Demand Function</a></li>
+                <li><a href="#example4">Example 4: Testing Multiple Models</a></li>
+                <li><a href="#example5">Example 5: Comparing All Test Methods</a></li>
+            </ul>
+
+            <div id="example1"></div>
+            <h2>Example 1: Phillips Curve - Inflation and Unemployment</h2>
+            <p>The Phillips curve posits an inverse relationship between unemployment and inflation. 
+            Let's test for autocorrelation in this classic macroeconomic relationship.</p>
+
+            <h3>Step 1: Download Data from FRED</h3>
+            <pre><code class="python">import pandas as pd
+import numpy as np
+from pandas_datareader import data as pdr
+import datetime
+
+# Download data from FRED (Federal Reserve Economic Data)
+start_date = datetime.datetime(1960, 1, 1)
+end_date = datetime.datetime(2023, 12, 31)
+
+# Unemployment rate (monthly, seasonally adjusted)
+unemployment = pdr.DataReader('UNRATE', 'fred', start_date, end_date)
+
+# CPI Inflation (year-over-year percent change)
+cpi = pdr.DataReader('CPIAUCSL', 'fred', start_date, end_date)
+inflation = cpi.pct_change(12) * 100  # 12-month percent change
+
+# Merge datasets
+data = pd.concat([unemployment, inflation], axis=1)
+data.columns = ['unemployment', 'inflation']
+data = data.dropna()
+
+print(data.head())
+print(f"\\nSample size: {len(data)} observations")</code></pre>
+
+            <h3>Step 2: Visualize the Relationship</h3>
+            <pre><code class="python">import matplotlib.pyplot as plt
+
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.scatter(data['unemployment'], data['inflation'], alpha=0.5)
+plt.xlabel('Unemployment Rate (%)')
+plt.ylabel('Inflation Rate (%)')
+plt.title('Phillips Curve: Inflation vs Unemployment')
+plt.grid(True, alpha=0.3)
+
+plt.subplot(1, 2, 2)
+plt.plot(data.index, data['unemployment'], label='Unemployment', alpha=0.7)
+plt.plot(data.index, data['inflation'], label='Inflation', alpha=0.7)
+plt.xlabel('Year')
+plt.ylabel('Rate (%)')
+plt.title('Time Series of Unemployment and Inflation')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()</code></pre>
+
+            <h3>Step 3: Run OLS Regression</h3>
+            <pre><code class="python">from boot_dw import ols_regression, durbin_watson, estimate_rho
+
+# Prepare data
+y = data['inflation'].values
+X = data['unemployment'].values.reshape(-1, 1)
+
+# Run OLS regression
+beta, residuals, fitted = ols_regression(y, X, add_constant=True)
+
+print(f"\\nRegression Results:")
+print(f"Intercept: {beta[0]:.4f}")
+print(f"Slope (unemployment): {beta[1]:.4f}")
+
+# Calculate DW statistic
+dw_stat = durbin_watson(residuals)
+print(f"\\nDurbin-Watson statistic: {dw_stat:.4f}")
+
+# Estimate autocorrelation
+rho_hat = estimate_rho(residuals)
+print(f"Estimated ρ: {rho_hat:.4f}")</code></pre>
+
+            <h3>Step 4: Test for Autocorrelation</h3>
+            <pre><code class="python">from boot_dw import bca_rho_test, bdw_test, autocorrelation_test
+
+# Method 1: BCa-ρ test (most powerful)
+print("\\n" + "="*60)
+print("BCa-ρ Test (Recommended)")
+print("="*60)
+result_bca = bca_rho_test(y, X, n_bootstrap=200, random_state=42)
+print(result_bca)
+
+# Method 2: Bootstrapped DW test
+print("\\n" + "="*60)
+print("Bootstrapped Durbin-Watson Test")
+print("="*60)
+result_bdw = bdw_test(y, X, n_bootstrap=200, random_state=42)
+print(result_bdw)
+
+# Interpretation
+print("\\n" + "="*60)
+print("Interpretation")
+print("="*60)
+if result_bca.pvalue < 0.05:
+    print("⚠ WARNING: Significant autocorrelation detected!")
+    print(f"  - Estimated ρ = {result_bca.statistic:.4f}")
+    print(f"  - P-value = {result_bca.pvalue:.4f}")
+    print("  - Standard errors in OLS are biased")
+    print("  - Consider using robust standard errors or GLS")
+else:
+    print("✓ No significant autocorrelation detected")
+    print(f"  - P-value = {result_bca.pvalue:.4f}")
+    print("  - OLS estimates are reliable")</code></pre>
+
+            <h3>Expected Output</h3>
+            <div class="note">
+                <p>For the Phillips curve, you typically observe positive autocorrelation in the residuals because 
+                macroeconomic shocks tend to persist over time. The BCa-ρ test will likely reject the null hypothesis,
+                indicating that you should use robust inference methods.</p>
+            </div>
+
+            <div id="example2"></div>
+            <h2>Example 2: Consumption Function</h2>
+            <p>The consumption function relates household consumption to disposable income. This is another fundamental 
+            macroeconomic relationship where autocorrelation is common.</p>
+
+            <h3>Complete Code</h3>
+            <pre><code class="python">import pandas as pd
+import numpy as np
+from pandas_datareader import data as pdr
+import datetime
+from boot_dw import bca_rho_test, ols_regression
+import matplotlib.pyplot as plt
+
+# Download quarterly data from FRED
+start_date = datetime.datetime(1947, 1, 1)
+end_date = datetime.datetime(2023, 12, 31)
+
+# Personal Consumption Expenditures (PCE)
+pce = pdr.DataReader('PCE', 'fred', start_date, end_date)
+
+# Disposable Personal Income (DPI)
+dpi = pdr.DataReader('DPI', 'fred', start_date, end_date)
+
+# Merge and convert to per capita (approximate)
+data = pd.concat([pce, dpi], axis=1)
+data.columns = ['consumption', 'income']
+data = data.dropna()
+
+print(f"Data from {data.index[0]} to {data.index[-1]}")
+print(f"Number of observations: {len(data)}")
+
+# Estimate consumption function: C = α + β*Y + u
+y = data['consumption'].values
+X = data['income'].values.reshape(-1, 1)
+
+# Run regression
+beta, residuals, fitted = ols_regression(y, X, add_constant=True)
+
+print(f"\\nConsumption Function Estimates:")
+print(f"  C = {beta[0]:.2f} + {beta[1]:.4f}*Y")
+print(f"  Marginal propensity to consume (MPC) = {beta[1]:.4f}")
+
+# Test for autocorrelation
+result = bca_rho_test(y, X, n_bootstrap=200, random_state=42)
+
+print(f"\\nAutocorrelation Test Results:")
+print(f"  Test method: {result.method}")
+print(f"  ρ̂ = {result.statistic:.4f}")
+print(f"  P-value = {result.pvalue:.4f}")
+print(f"  95% BCa CI: [{result.additional_info['bca_interval'][0]:.4f}, "
+      f"{result.additional_info['bca_interval'][1]:.4f}]")
+
+if result.pvalue < 0.05:
+    print("\\n⚠ Autocorrelation detected in consumption function residuals")
+else:
+    print("\\n✓ No significant autocorrelation")
+
+# Plot diagnostics
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+# Fitted vs Actual
+axes[0, 0].scatter(fitted, y, alpha=0.5)
+axes[0, 0].plot([y.min(), y.max()], [y.min(), y.max()], 'r--')
+axes[0, 0].set_xlabel('Fitted Values')
+axes[0, 0].set_ylabel('Actual Consumption')
+axes[0, 0].set_title('Fitted vs Actual')
+axes[0, 0].grid(True, alpha=0.3)
+
+# Residuals over time
+axes[0, 1].plot(data.index, residuals, alpha=0.7)
+axes[0, 1].axhline(y=0, color='r', linestyle='--')
+axes[0, 1].set_xlabel('Date')
+axes[0, 1].set_ylabel('Residuals')
+axes[0, 1].set_title('Residuals Over Time')
+axes[0, 1].grid(True, alpha=0.3)
+
+# Residual autocorrelation plot
+axes[1, 0].scatter(residuals[:-1], residuals[1:], alpha=0.5)
+axes[1, 0].set_xlabel('Residual(t-1)')
+axes[1, 0].set_ylabel('Residual(t)')
+axes[1, 0].set_title(f'Residual Autocorrelation (ρ̂ = {result.statistic:.4f})')
+axes[1, 0].grid(True, alpha=0.3)
+
+# Residual histogram
+axes[1, 1].hist(residuals, bins=30, edgecolor='black', alpha=0.7)
+axes[1, 1].set_xlabel('Residuals')
+axes[1, 1].set_ylabel('Frequency')
+axes[1, 1].set_title('Distribution of Residuals')
+axes[1, 1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()</code></pre>
+
+            <div id="example3"></div>
+            <h2>Example 3: Money Demand Function</h2>
+            <p>The money demand function relates the demand for money to income and interest rates. 
+            This example shows how to handle multiple regressors.</p>
+
+            <pre><code class="python">import pandas as pd
+import numpy as np
+from pandas_datareader import data as pdr
+import datetime
+from boot_dw import autocorrelation_test
+
+# Download quarterly data
+start = datetime.datetime(1959, 1, 1)
+end = datetime.datetime(2023, 12, 31)
+
+# M2 Money Stock
+m2 = pdr.DataReader('M2SL', 'fred', start, end)
+
+# Real GDP
+gdp = pdr.DataReader('GDPC1', 'fred', start, end)
+
+# 3-Month Treasury Bill Rate
+interest = pdr.DataReader('TB3MS', 'fred', start, end)
+
+# Merge all data
+data = pd.concat([m2, gdp, interest], axis=1)
+data.columns = ['M2', 'GDP', 'Interest']
+data = data.dropna()
+
+# Convert to logs (standard in money demand estimation)
+data['log_M2'] = np.log(data['M2'])
+data['log_GDP'] = np.log(data['GDP'])
+data['log_interest'] = np.log(data['Interest'] + 0.01)  # Add small constant to avoid log(0)
+
+print(f"Money Demand Data: {len(data)} observations")
+print(data.head())
+
+# Estimate money demand: log(M/P) = α + β₁*log(Y) + β₂*log(r) + u
+y = data['log_M2'].values
+X = data[['log_GDP', 'log_interest']].values
+
+# Test using different methods
+print("\\n" + "="*70)
+print("Testing Money Demand Function for Autocorrelation")
+print("="*70)
+
+methods = ['dw', 'bdw', 'b_rho', 'bca_rho']
+method_names = {
+    'dw': 'Classical Durbin-Watson',
+    'bdw': 'Bootstrapped DW',
+    'b_rho': 'Bootstrapped ρ',
+    'bca_rho': 'BCa-ρ (Recommended)'
+}
+
+for method in methods:
+    print(f"\\n{method_names[method]}:")
+    print("-" * 50)
+    
+    result = autocorrelation_test(
+        y, X,
+        method=method,
+        n_bootstrap=200,
+        random_state=42
+    )
+    
+    print(f"Statistic: {result.statistic:.4f}")
+    if result.pvalue is not None:
+        print(f"P-value: {result.pvalue:.4f}")
+        if result.pvalue < 0.05:
+            print("Decision: Reject H₀ (autocorrelation detected)")
+        else:
+            print("Decision: Fail to reject H₀ (no autocorrelation)")
+    else:
+        print("P-value: Not available (use DW tables)")
+    
+    # Print additional info for bootstrap methods
+    if method != 'dw' and 'bootstrap_mean' in result.additional_info:
+        print(f"Bootstrap mean ρ: {result.additional_info['bootstrap_mean']:.4f}")
+        print(f"Bootstrap std ρ: {result.additional_info['bootstrap_std']:.4f}")</code></pre>
+
+            <div id="example4"></div>
+            <h2>Example 4: Testing Multiple Models</h2>
+            <p>Often you want to compare autocorrelation across several model specifications. 
+            Here's how to do it efficiently:</p>
+
+            <pre><code class="python">import pandas as pd
+import numpy as np
+from boot_dw import bca_rho_test
+import matplotlib.pyplot as plt
+
+# Simulate different model specifications
+np.random.seed(42)
+n = 100
+X1 = np.random.randn(n, 1)
+X2 = np.random.randn(n, 2)
+X3 = np.random.randn(n, 3)
+
+# Generate errors with different autocorrelation levels
+def generate_ar1_errors(n, rho):
+    errors = np.zeros(n)
+    errors[0] = np.random.randn()
+    for t in range(1, n):
+        errors[t] = rho * errors[t-1] + np.random.randn()
+    return errors
+
+# Create different models
+models = {
+    'Model 1 (ρ=0.0)': {
+        'X': X1,
+        'errors': generate_ar1_errors(n, 0.0)
+    },
+    'Model 2 (ρ=0.3)': {
+        'X': X2,
+        'errors': generate_ar1_errors(n, 0.3)
+    },
+    'Model 3 (ρ=0.6)': {
+        'X': X3,
+        'errors': generate_ar1_errors(n, 0.6)
+    }
+}
+
+# Test each model
+results = {}
+for name, spec in models.items():
+    X = spec['X']
+    y = X @ np.random.randn(X.shape[1]) + spec['errors']
+    
+    result = bca_rho_test(y, X, n_bootstrap=200, random_state=42)
+    results[name] = {
+        'rho_estimate': result.statistic,
+        'pvalue': result.pvalue,
+        'ci_lower': result.additional_info['bca_interval'][0],
+        'ci_upper': result.additional_info['bca_interval'][1]
+    }
+
+# Display results in a table
+results_df = pd.DataFrame(results).T
+print("\\nAutocorrelation Test Results Across Models")
+print("="*70)
+print(results_df.to_string())
+
+# Visualize results
+fig, ax = plt.subplots(figsize=(10, 6))
+
+models_list = list(results.keys())
+rhos = [results[m]['rho_estimate'] for m in models_list]
+ci_lowers = [results[m]['ci_lower'] for m in models_list]
+ci_uppers = [results[m]['ci_upper'] for m in models_list]
+pvalues = [results[m]['pvalue'] for m in models_list]
+
+y_pos = np.arange(len(models_list))
+
+# Plot point estimates with error bars
+colors = ['green' if p >= 0.05 else 'red' for p in pvalues]
+ax.barh(y_pos, rhos, color=colors, alpha=0.6, label='ρ estimate')
+
+# Add confidence intervals
+for i, model in enumerate(models_list):
+    ax.plot([ci_lowers[i], ci_uppers[i]], [i, i], 'k-', linewidth=2)
+    ax.plot([ci_lowers[i], ci_lowers[i]], [i-0.2, i+0.2], 'k-', linewidth=2)
+    ax.plot([ci_uppers[i], ci_uppers[i]], [i-0.2, i+0.2], 'k-', linewidth=2)
+
+ax.axvline(x=0, color='blue', linestyle='--', label='H₀: ρ=0')
+ax.set_yticks(y_pos)
+ax.set_yticklabels(models_list)
+ax.set_xlabel('Autocorrelation Coefficient (ρ)')
+ax.set_title('Autocorrelation Estimates with 95% BCa Confidence Intervals')
+ax.legend()
+ax.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()</code></pre>
+
+            <div id="example5"></div>
+            <h2>Example 5: Comparing All Test Methods</h2>
+            <p>This example demonstrates the performance differences between all four test methods:</p>
+
+            <pre><code class="python">import numpy as np
+from boot_dw import dw_test, bdw_test, b_rho_test, bca_rho_test
+import time
+
+# Generate data with known autocorrelation
+np.random.seed(42)
+n = 50
+X = np.random.randn(n, 2)
+
+# Generate AR(1) errors with ρ = 0.7
+rho_true = 0.7
+errors = np.zeros(n)
+errors[0] = np.random.randn() / np.sqrt(1 - rho_true**2)
+for t in range(1, n):
+    errors[t] = rho_true * errors[t-1] + np.random.randn()
+
+y = 2 + 3*X[:, 0] - 1.5*X[:, 1] + errors
+
+print("="*80)
+print(f"Testing with True ρ = {rho_true}")
+print(f"Sample size: n = {n}")
+print("="*80)
+
+# Test 1: Classical DW
+print("\\n1. Classical Durbin-Watson Test")
+print("-" * 80)
+start_time = time.time()
+result_dw = dw_test(y, X)
+time_dw = time.time() - start_time
+print(result_dw)
+print(f"Computation time: {time_dw:.4f} seconds")
+
+# Test 2: Bootstrapped DW
+print("\\n2. Bootstrapped Durbin-Watson Test")
+print("-" * 80)
+start_time = time.time()
+result_bdw = bdw_test(y, X, n_bootstrap=200, random_state=42)
+time_bdw = time.time() - start_time
+print(result_bdw)
+print(f"Computation time: {time_bdw:.4f} seconds")
+
+# Test 3: Bootstrapped ρ
+print("\\n3. Bootstrapped ρ Test")
+print("-" * 80)
+start_time = time.time()
+result_brho = b_rho_test(y, X, n_bootstrap=200, random_state=42)
+time_brho = time.time() - start_time
+print(result_brho)
+print(f"Computation time: {time_brho:.4f} seconds")
+
+# Test 4: BCa-ρ
+print("\\n4. BCa-ρ Test")
+print("-" * 80)
+start_time = time.time()
+result_bca = bca_rho_test(y, X, n_bootstrap=200, random_state=42)
+time_bca = time.time() - start_time
+print(result_bca)
+print(f"Computation time: {time_bca:.4f} seconds")
+
+# Summary comparison
+print("\\n" + "="*80)
+print("SUMMARY COMPARISON")
+print("="*80)
+print(f"{'Method':<30} {'Statistic':<15} {'P-value':<15} {'Decision':<20}")
+print("-" * 80)
+
+tests = [
+    ('Classical DW', result_dw),
+    ('Bootstrapped DW', result_bdw),
+    ('Bootstrapped ρ', result_brho),
+    ('BCa-ρ', result_bca)
+]
+
+for name, result in tests:
+    stat = f"{result.statistic:.4f}"
+    pval = f"{result.pvalue:.4f}" if result.pvalue is not None else "N/A"
+    decision = "Reject H₀" if result.pvalue and result.pvalue < 0.05 else "Fail to reject"
+    if result.pvalue is None:
+        decision = "Use DW tables"
+    print(f"{name:<30} {stat:<15} {pval:<15} {decision:<20}")
+
+print("\\nRecommendation: Use BCa-ρ test for best small-sample performance!")
+</code></pre>
+
+            <h2>Best Practices</h2>
+            <div class="tip">
+                <h3>Tips for Using boot_dw Effectively:</h3>
+                <ol>
+                    <li><strong>Use BCa-ρ test by default:</strong> It has the best small-sample properties and highest power.</li>
+                    <li><strong>Set random_state for reproducibility:</strong> Always use <code>random_state=42</code> (or any fixed value) for reproducible results.</li>
+                    <li><strong>Start with n_bootstrap=200:</strong> This matches the original paper and provides good accuracy.</li>
+                    <li><strong>Visualize your residuals:</strong> Always plot residuals to check for patterns beyond autocorrelation.</li>
+                    <li><strong>Use real-world data:</strong> Simulation studies are useful, but testing with actual economic data provides better intuition.</li>
+                    <li><strong>Report all relevant statistics:</strong> Include ρ̂, p-value, confidence intervals, and DW statistic for completeness.</li>
+                </ol>
+            </div>
+
+            <h2>Download Example Scripts</h2>
+            <p>All examples are available as downloadable Python scripts on our GitHub repository:</p>
+            <ul>
+                <li><a href="https://github.com/your-repo/boot_dw/tree/main/examples/phillips_curve.py">phillips_curve.py</a></li>
+                <li><a href="https://github.com/your-repo/boot_dw/tree/main/examples/consumption_function.py">consumption_function.py</a></li>
+                <li><a href="https://github.com/your-repo/boot_dw/tree/main/examples/money_demand.py">money_demand.py</a></li>
+                <li><a href="https://github.com/your-repo/boot_dw/tree/main/examples/model_comparison.py">model_comparison.py</a></li>
+                <li><a href="https://github.com/your-repo/boot_dw/tree/main/examples/all_methods_comparison.py">all_methods_comparison.py</a></li>
+            </ul>
+
+            <h2>Next Steps</h2>
+            <ul>
+                <li><a href="api.html">Explore the full API reference</a> for detailed function documentation</li>
+                <li><a href="https://github.com/your-repo/boot_dw">Star the project on GitHub</a> if you find it useful</li>
+                <li><a href="mailto:merwanroudane920@gmail.com">Contact the author</a> with questions or suggestions</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 boot_dw by Dr. Merwan Roudane. Released under the MIT License.</p>
+            <p>
+                <a href="https://github.com/your-repo/boot_dw">GitHub</a> |
+                <a href="mailto:merwanroudane920@gmail.com">Contact</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

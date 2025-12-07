@@ -1,0 +1,508 @@
+/* Root Variables */
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #3b82f6;
+    --accent-color: #10b981;
+    --text-color: #1f2937;
+    --text-light: #6b7280;
+    --bg-color: #ffffff;
+    --bg-light: #f9fafb;
+    --bg-dark: #111827;
+    --border-color: #e5e7eb;
+    --code-bg: #f3f4f6;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--bg-dark);
+    padding: 16px 0;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.logo-icon {
+    font-size: 32px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #d1d5db;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #ffffff;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 120px 0 80px;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 64px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.tagline {
+    font-size: 28px;
+    font-weight: 300;
+    margin-bottom: 16px;
+    opacity: 0.95;
+}
+
+.description {
+    font-size: 18px;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    opacity: 0.9;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: white;
+    color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-secondary:hover {
+    background-color: white;
+    color: var(--primary-color);
+}
+
+.btn-large {
+    padding: 18px 48px;
+    font-size: 18px;
+}
+
+/* Features Section */
+.features {
+    padding: 80px 0;
+    background-color: var(--bg-light);
+}
+
+.features h2 {
+    text-align: center;
+    font-size: 42px;
+    margin-bottom: 64px;
+    color: var(--text-color);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+}
+
+.feature-card {
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.feature-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.feature-card h3 {
+    font-size: 22px;
+    margin-bottom: 12px;
+    color: var(--text-color);
+}
+
+.feature-card p {
+    color: var(--text-light);
+    line-height: 1.7;
+}
+
+/* Comparison Section */
+.comparison {
+    padding: 80px 0;
+}
+
+.comparison h2 {
+    text-align: center;
+    font-size: 42px;
+    margin-bottom: 48px;
+}
+
+.comparison-table {
+    max-width: 900px;
+    margin: 0 auto;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+th, td {
+    padding: 16px;
+    text-align: left;
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background-color: var(--bg-light);
+}
+
+.check {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.cross {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.warning {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+/* Quick Start Preview */
+.quickstart-preview {
+    padding: 80px 0;
+    background-color: var(--bg-light);
+}
+
+.quickstart-preview h2 {
+    text-align: center;
+    font-size: 42px;
+    margin-bottom: 48px;
+}
+
+.code-example {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.code-example pre {
+    background-color: var(--bg-dark);
+    color: #e5e7eb;
+    padding: 32px;
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: var(--shadow-lg);
+}
+
+.code-example code {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* Methodology Section */
+.methodology {
+    padding: 80px 0;
+}
+
+.methodology h2 {
+    text-align: center;
+    font-size: 42px;
+    margin-bottom: 48px;
+}
+
+.paper-citation {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 48px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    gap: 32px;
+}
+
+.citation-icon {
+    font-size: 64px;
+    flex-shrink: 0;
+}
+
+.citation-content h3 {
+    font-size: 28px;
+    margin-bottom: 16px;
+    color: var(--primary-color);
+}
+
+.citation-full {
+    font-size: 16px;
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+.citation-full em {
+    font-style: italic;
+    color: var(--text-light);
+}
+
+.citation-description {
+    color: var(--text-light);
+    line-height: 1.7;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    text-align: center;
+}
+
+.cta-section h2 {
+    font-size: 42px;
+    margin-bottom: 16px;
+}
+
+.cta-section p {
+    font-size: 18px;
+    margin-bottom: 32px;
+    opacity: 0.9;
+}
+
+/* Footer */
+footer {
+    background-color: var(--bg-dark);
+    color: #9ca3af;
+    padding: 40px 0;
+    text-align: center;
+}
+
+footer a {
+    color: #d1d5db;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 42px;
+    }
+    
+    .tagline {
+        font-size: 22px;
+    }
+    
+    .description {
+        font-size: 16px;
+    }
+    
+    .features h2,
+    .comparison h2,
+    .quickstart-preview h2,
+    .methodology h2,
+    .cta-section h2 {
+        font-size: 32px;
+    }
+    
+    .nav-links {
+        gap: 16px;
+        font-size: 14px;
+    }
+    
+    .paper-citation {
+        flex-direction: column;
+        padding: 32px;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn {
+        text-align: center;
+    }
+}
+
+/* Content Pages Styles */
+.content-page {
+    padding: 60px 0;
+    min-height: calc(100vh - 200px);
+}
+
+.content-page h1 {
+    font-size: 42px;
+    margin-bottom: 24px;
+    color: var(--text-color);
+}
+
+.content-page h2 {
+    font-size: 32px;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    color: var(--text-color);
+}
+
+.content-page h3 {
+    font-size: 24px;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: var(--text-color);
+}
+
+.content-page p {
+    margin-bottom: 16px;
+    line-height: 1.8;
+    color: var(--text-light);
+}
+
+.content-page code {
+    background-color: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 14px;
+}
+
+.content-page pre code {
+    display: block;
+    padding: 24px;
+    background-color: var(--bg-dark);
+    color: #e5e7eb;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.content-page ul, .content-page ol {
+    margin-bottom: 16px;
+    margin-left: 32px;
+}
+
+.content-page li {
+    margin-bottom: 8px;
+    color: var(--text-light);
+    line-height: 1.7;
+}
+
+.note {
+    background-color: #dbeafe;
+    border-left: 4px solid var(--primary-color);
+    padding: 16px;
+    margin: 24px 0;
+    border-radius: 4px;
+}
+
+.warning {
+    background-color: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 16px;
+    margin: 24px 0;
+    border-radius: 4px;
+}
+
+.tip {
+    background-color: #d1fae5;
+    border-left: 4px solid var(--accent-color);
+    padding: 16px;
+    margin: 24px 0;
+    border-radius: 4px;
+}

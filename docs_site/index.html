@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>boot_dw - Bootstrap Tests for Autocorrelation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">📊</span>
+                <span class="logo-text">boot_dw</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="quick-start.html">Quick Start</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="api.html">API Reference</a></li>
+                <li><a href="https://github.com/your-repo/boot_dw" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Boot_DW</h1>
+                <p class="tagline">Bootstrap Tests for Autocorrelation in Regression Models</p>
+                <p class="description">A powerful Python implementation of bootstrap-based tests for autocorrelation, 
+                based on Jeong & Chung (2001)</p>
+                <div class="cta-buttons">
+                    <a href="installation.html" class="btn btn-primary">Get Started</a>
+                    <a href="examples.html" class="btn btn-secondary">View Examples</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="features">
+        <div class="container">
+            <h2>Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Classical DW Test</h3>
+                    <p>Traditional Durbin-Watson test with proper statistical foundations</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Bootstrapped DW (BDW)</h3>
+                    <p>Eliminates the indeterminate range using recursive bootstrap</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Bootstrapped ρ (B-ρ)</h3>
+                    <p>Direct bootstrap testing of the autocorrelation coefficient</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>BCa-ρ Test</h3>
+                    <p>Bias-corrected accelerated test with superior power</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Easy to Use</h3>
+                    <p>Simple, intuitive API for econometric analysis</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Well Documented</h3>
+                    <p>Comprehensive guides with real-world examples</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison">
+        <div class="container">
+            <h2>Why Bootstrap Tests?</h2>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Classical DW</th>
+                            <th>Bootstrapped Tests</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Indeterminate Range</td>
+                            <td><span class="cross">❌</span> Yes</td>
+                            <td><span class="check">✓</span> Eliminated</td>
+                        </tr>
+                        <tr>
+                            <td>Exact P-values</td>
+                            <td><span class="cross">❌</span> No</td>
+                            <td><span class="check">✓</span> Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Small Sample Performance</td>
+                            <td><span class="cross">❌</span> Poor</td>
+                            <td><span class="check">✓</span> Excellent</td>
+                        </tr>
+                        <tr>
+                            <td>Distribution Free</td>
+                            <td><span class="cross">❌</span> Requires normality</td>
+                            <td><span class="check">✓</span> Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Power</td>
+                            <td><span class="warning">⚠</span> Good</td>
+                            <td><span class="check">✓</span> Superior</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="quickstart-preview">
+        <div class="container">
+            <h2>Quick Example</h2>
+            <div class="code-example">
+                <pre><code class="python"># Install the package
+pip install boot-dw
+
+# Import and use
+import numpy as np
+from boot_dw import bca_rho_test
+
+# Your data
+y = np.array([...])  # dependent variable
+X = np.array([...])  # independent variables
+
+# Run the most powerful test (BCa-ρ)
+result = bca_rho_test(y, X, random_state=42)
+print(result)
+
+# Output:
+# BCa-ρ test: ρ = 0.6521, p-value = 0.0023
+# Reject H₀: ρ = 0 (evidence of autocorrelation)</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section class="methodology">
+        <div class="container">
+            <h2>Based on Peer-Reviewed Research</h2>
+            <div class="paper-citation">
+                <div class="citation-icon">📄</div>
+                <div class="citation-content">
+                    <h3>Jeong & Chung (2001)</h3>
+                    <p class="citation-full">
+                        "Bootstrap tests for autocorrelation"<br>
+                        <em>Computational Statistics & Data Analysis</em>, 38(1): 49-69
+                    </p>
+                    <p class="citation-description">
+                        This implementation follows the methodology exactly as described in the paper,
+                        including the recursive bootstrap procedures and BCa corrections.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to get started?</h2>
+            <p>Install boot_dw and start testing for autocorrelation in your regression models</p>
+            <a href="installation.html" class="btn btn-large">Get Started</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 boot_dw by Dr. Merwan Roudane. Released under the MIT License.</p>
+            <p>
+                <a href="https://github.com/your-repo/boot_dw">GitHub</a> |
+                <a href="mailto:merwanroudane920@gmail.com">Contact</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
